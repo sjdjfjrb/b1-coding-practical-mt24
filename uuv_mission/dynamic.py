@@ -2,7 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
-from .terrain import generate_reference_and_limits
+import pandas as pd
+from uuv_mission.terrain import generate_reference_and_limits
 
 class Submarine:
     def __init__(self):
@@ -75,8 +76,39 @@ class Mission:
 
     @classmethod
     def from_csv(cls, file_name: str):
-        # You are required to implement this method
-        pass
+        
+        def __init__(self, reference, cave_height, cave_depth):
+            self.reference = reference
+            self.cave_height = cave_height
+            self.cave_depth = cave_depth
+
+        def __repr__(self):
+            return f"Mission(reference={self.reference}, cave_height={self.cave_height}, cave_depth={self.cave_depth})"
+
+def create_missions_from_csv(file_path):
+    # Load the CSV file
+    mission_data = pd.read_csv(file_path)
+    
+    # Create a list of Mission instances
+    missions = [
+        Mission(row['reference'], row['cave_height'], row['cave_depth'])
+        for _, row in mission_data.iterrows()
+    ]
+    
+    return missions
+
+# Create Mission instances from the CSV
+file_name = 'mission.csv'  # Store the file name
+file_path = f'./data/{file_name}'  # Create the file path using f-string
+
+# Call the function with the correct file path
+missions = create_missions_from_csv(file_path)
+
+# Display the first 5 mission instances
+print(missions[:5])
+
+        
+
 
 
 class ClosedLoop:
